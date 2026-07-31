@@ -23,7 +23,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-    }
+    },
+    product_reviews: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Customer_Reviews"
+    },
 }, {
     timestamps: true,
 });

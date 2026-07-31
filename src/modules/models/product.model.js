@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
     }],
     remaining_product_count: {
         type: Number,
-        minlength: 0,
+        min: 0,
         default: 0,
     },
     product_in_stock: {
