@@ -1,22 +1,25 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 
 const reviewSchema = new mongoose.Schema({
+    user: {
+        type: ObjectId,
+        ref: "User"
+    }, 
+    product: {
+        type: ObjectId,
+        ref: "Product",
+    },
     rating: {
         type: Number,
         default: 0,
         min: 0,
         max: 5,
     },
-    review: {
+    comment: {
         type: String,
         trim: true,
     },
-    product_img: {
-        type: String,
-        match: [
-            /^(https?:\/\/[^\s$.?#].[^\s]*)$/, "Please provide valid image address"
-        ],
-    }
 }, {
     timestamps: true,
     collection: "Customer_Reviews"
