@@ -13,7 +13,7 @@ const startServer = async () => {
         await dbConnection()
 
         app.listen(PORT, () => {
-            console.log(`Server is running at https://localhost:${PORT} / published URI`);
+            console.log(`Server is running at http://localhost:${PORT} / published URI`);
         });
     } catch(err) {
         console.log(err);

@@ -1,4 +1,4 @@
-const getUser = data => {
+const createUser = data => {
     if (!data) {
         const err = new Error("No User Data Found");
         err.status = 400;
@@ -6,5 +6,9 @@ const getUser = data => {
         throw err;
     };
 
-    
+    console.log(data)  
+};
+
+module.exports = {
+    createUser,
 };

@@ -24,12 +24,13 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    product_reviews: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Customer_Reviews"
-    },
+    user_type: {
+        type: String,
+        enum: ["consumer", "retailer"],
+        default: "consumer",
+    }
 }, {
     timestamps: true,
 });
 
-mongoose.model.exports = mongoose.model("User", userSchema)
+module.exports = mongoose.model("User", userSchema)
