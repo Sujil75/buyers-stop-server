@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const User = require("../models/user.model");
 
 const provideInvalidData = data => {
     const {email, username, password} = data;
@@ -35,9 +36,38 @@ const createUser = async data => {
 
     provideInvalidData(data);
 
+    const existingUser = await User.findOne({
+        $or: [
+            {username: data.username},
+            {email: data.email},
+        ],
+    });
+
+    if (existingUser) {
+        const err = new Error(
+            existingUser.email === data.email ? 
+                "Email already taken" :
+                "Username already taken"
+        );
+
+        err.status = 409;
+
+        throw err;
+    };
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    console.log(hashedPassword);
+    const updatedData = {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        user_type: data.user_type,
+        username: data.username,
+    };
+    
+    await User.create(updatedData);
+
+    return "User created successfully";
 };
 
 module.exports = {
