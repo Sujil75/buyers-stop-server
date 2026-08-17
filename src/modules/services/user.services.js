@@ -1,5 +1,9 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const User = require("../models/user.model");
+
+const secret = process.env.JWT_SECRET;
 
 const provideInvalidData = data => {
     const {email, username, password} = data;
@@ -70,6 +74,51 @@ const createUser = async data => {
     return "User created successfully";
 };
 
+const getUser = async data => {
+    const admin = await User.findOne({
+        $and: [
+            {username: data.username},
+            {email: data.email},
+        ]
+    });
+    
+    if (admin === null) {
+        const err = new Error(
+            admin.email !== data.email ? 
+                "Your email doesn't match" :
+                "Your username doesn't match"
+        );
+
+        err.status = 409;
+
+        throw err;
+    };
+
+    const checkPassword = await bcrypt.compare(data.password, admin.password);
+
+    if (!checkPassword) {
+        const err = new Error("Password is incorrect");
+        err.status = 401;
+
+        throw err;
+    };
+
+    const body = {
+        id: admin.id,
+        email: admin.email,
+        username: admin.username,
+    }
+    
+    const token = jwt.sign(
+        body, secret, {
+            expiresIn: "1d"
+        }
+    );
+
+    return token;
+};
+
 module.exports = {
     createUser,
+    getUser,
 };
