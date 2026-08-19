@@ -107,6 +107,7 @@ const getUser = async data => {
         id: admin.id,
         email: admin.email,
         username: admin.username,
+        role: admin.user_type,
     }
     
     const token = jwt.sign(
