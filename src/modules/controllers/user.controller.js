@@ -1,3 +1,4 @@
+const { missingBodyErrHandler } = require("../../handler/errHandlers");
 const {
     createUser,
     getUser,
@@ -7,12 +8,7 @@ const registerUser = async (req, res, next) => {
     try {
         const data = req.body;
 
-        if (Object.keys(data).length === 0) {
-            const err = new Error("Request body missing");
-            err.status = 404;
-
-            throw err;
-        };
+        missingBodyErrHandler(data);
 
         const message = await createUser(data);
 
