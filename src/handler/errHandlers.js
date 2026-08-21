@@ -15,3 +15,10 @@ module.exports.missingBodyErrHandler = (data, next) => {
         next(err);
     };
 };
+
+module.exports.duplicateContent = msg => {
+    const err = new Error(msg);
+    err.status = 409;
+
+    throw err;
+};
