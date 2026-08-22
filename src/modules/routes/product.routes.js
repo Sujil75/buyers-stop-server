@@ -8,5 +8,6 @@ const roleMiddleware = require("../../middlewares/roleMiddleware");
 const router = express.Router();
 
 router.post("/product", userAuthenticator, roleMiddleware("retailer"), addProduct);
+router.get("/product", userAuthenticator, roleMiddleware("retailer, consumer"))
 
 module.exports = router;

@@ -20,3 +20,11 @@ module.exports.addProduct = async (req, res, next) => {
         next(err);
     };
 }
+
+module.exports.showProducts = (req, res, next) => {
+    try {
+        
+    } catch (err) {
+        next(err);
+    };
+};
