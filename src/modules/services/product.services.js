@@ -26,10 +26,15 @@ module.exports.postProduct = async data => {
 
 module.exports.getProducts = async () => {
     const productsList = await Product.find();
+    let message = "Data received successfully";
+
+    if (productsList.length === 0) {
+        message = "Product list is empty";
+    };
 
     return data = {
         content: productsList,
-        message: "Data received successfully",
+        message,
     };
 };
 
@@ -50,4 +55,17 @@ module.exports.putProducts = async (data, id) => {
     };
 
     return "Product updated successfully";
+};
+
+
+module.exports.deleteProduct = async id => {
+    validateProductId(id);
+
+    const deleteProduct = await Product.findByIdAndDelete(id);
+
+    if (!deleteProduct) {
+        invalidContent("Product not deleted", 404);
+    };
+
+    return "Product deleted successfully";
 };

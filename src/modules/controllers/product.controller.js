@@ -2,7 +2,8 @@ const { missingBodyErrHandler } = require("../../handler/errHandlers");
 const { 
     postProduct,
     getProducts,
-    putProducts
+    putProducts,
+    deleteProduct
 } = require("../services/product.services");
 
 module.exports.createProduct = async (req, res, next) => {
@@ -53,6 +54,22 @@ module.exports.updateProducts = async (req, res, next) => {
             message,
         });
     } catch(err) {
+        next(err);
+    };
+};
+
+module.exports.removeProducts = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const message = await deleteProduct(id);
+
+        res.status(200).json({
+            success: true,
+            status: 200,
+            message,
+        });
+    } catch (err) {
         next(err);
     };
 };
