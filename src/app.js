@@ -15,7 +15,7 @@ app.use(cors());
 
 app.use("/api/auth", userRoutes);
 
-app.use("/api", productRoutes);
+app.use("/api/product", productRoutes);
 
 app.use(errMiddleware);
 

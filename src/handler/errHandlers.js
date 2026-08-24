@@ -16,9 +16,9 @@ module.exports.missingBodyErrHandler = (data, next) => {
     };
 };
 
-module.exports.duplicateContent = msg => {
+module.exports.invalidContent = (msg, status) => {
     const err = new Error(msg);
-    err.status = 409;
+    err.status = status;
 
     throw err;
 };
