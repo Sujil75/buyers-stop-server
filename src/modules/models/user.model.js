@@ -28,7 +28,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["consumer", "retailer"],
         default: "consumer",
-    }
+    },
+    user_address: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Address",
+    },
 }, {
     timestamps: true,
 });
