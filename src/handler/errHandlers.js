@@ -9,8 +9,8 @@ module.exports.missingBodyErrHandler = (data, next) => {
     };
 
     if (Object.keys(data).length <= 0) {
-        err = new Error("Content body data missing");
-        err.status = 400;
+        err = new Error("Request body missing");
+        err.status = 404;
 
         next(err);
     };
