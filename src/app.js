@@ -13,7 +13,7 @@ app.use(cors());
 //     res.send("Hello, Buyers stop backend starts here!");
 // });
 
-app.use("/api/auth", userRoutes);
+app.use("/api", userRoutes);
 
 app.use("/api/product", productRoutes);
 

@@ -1,10 +1,11 @@
 const { missingBodyErrHandler } = require("../../handler/errHandlers");
 const {
     createUser,
+    validateUser,
     getUser,
 } = require("../services/user.services");
 
-const registerUser = async (req, res, next) => {
+module.exports.registerUser = async (req, res, next) => {
     try {
         const data = req.body;
 
@@ -22,7 +23,7 @@ const registerUser = async (req, res, next) => {
     };
 };
 
-const loginUser = async (req, res, next) => {
+module.exports.loginUser = async (req, res, next) => {
     try {
         const body = req.body;
 
@@ -33,7 +34,7 @@ const loginUser = async (req, res, next) => {
             throw err;
         };
 
-        const message = await getUser(body);
+        const message = await validateUser(body);
 
         res.status(200).json({
             success: true,
@@ -45,7 +46,19 @@ const loginUser = async (req, res, next) => {
     };
 };
 
-module.exports = {
-    registerUser,
-    loginUser,
+module.exports.showUser = async (req, res, next) => {
+    try {
+        const body = req.user;
+
+        const content = await getUser(body);
+
+        res.status(200).json({
+            success: true,
+            status: 200,
+            message: content.message,
+            data: content.data,
+        });
+    } catch (err) {
+        next(err);
+    };
 };

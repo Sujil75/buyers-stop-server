@@ -30,7 +30,7 @@ const provideInvalidData = data => {
     };
 };
 
-const createUser = async data => {
+module.exports.createUser = async data => {
     if (!data) {
         const err = new Error("No User Data Found");
         err.status = 400;
@@ -74,7 +74,7 @@ const createUser = async data => {
     return "User created successfully";
 };
 
-const getUser = async data => {
+module.exports.validateUser = async data => {
     const admin = await User.findOne({
         $and: [
             {username: data.username},
@@ -119,7 +119,12 @@ const getUser = async data => {
     return token;
 };
 
-module.exports = {
-    createUser,
-    getUser,
+module.exports.getUser = async data => {
+    const {id} = data;
+    const user = await User.findById(id);
+    
+    return {
+        data: user,
+        message: "Successfully fetched user details",
+    };
 };
