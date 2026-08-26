@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+const { invalidContent } = require("../../handler/errHandlers");
 const User = require("../models/user.model");
 
 module.exports.getUser = async data => {
@@ -14,5 +16,37 @@ module.exports.putUser = async (...data) => {
     const content = data[0];
     const user = data[1];
 
-    console.log(content, user);
+    if (content.new_password || content.old_password) {
+        if (!content.new_password) invalidContent("Provide a new_password", 404);
+
+        if (!content.old_password) invalidContent("Provide the old_password", 404);
+
+        const adminPassword = (await User.findById(user.id).select("+password"))?.password;
+
+        const isValidPassword = await bcrypt.compare(
+            content.old_password, 
+            adminPassword
+        );
+
+        if (!isValidPassword) invalidContent("Invalid Old Password", 401);
+        
+        const newHashedPassword = await bcrypt.hash(content.new_password, 10);
+        
+        delete content.old_password;
+        delete content.new_password;
+        content.password = newHashedPassword;
+    };
+
+    const body = await User.findByIdAndUpdate(
+        user.id,
+        content,
+        {
+            new: true,
+            runValidators: true,
+        },
+    );
+
+    if (!body) invalidContent("User not updated successfully", 404);
+
+    return "Data updated successfully";
 };

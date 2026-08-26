@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        select: false,
     },
     user_type: {
         type: String,

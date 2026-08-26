@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const User = require("../models/user.model");
+const { invalidContent } = require("../../handler/errHandlers");
 
 const secret = process.env.JWT_SECRET;
 
@@ -76,23 +77,11 @@ module.exports.createUser = async data => {
 
 module.exports.validateUser = async data => {
     const admin = await User.findOne({
-        $and: [
-            {username: data.username},
-            {email: data.email},
-        ]
-    });
+        username: data.username,
+        email: data.email,
+    }).select("+password");
     
-    if (admin === null) {
-        const err = new Error(
-            admin.email !== data.email ? 
-                "Your email doesn't match" :
-                "Your username doesn't match"
-        );
-
-        err.status = 409;
-
-        throw err;
-    };
+    if (!admin) invalidContent("Invalid email or password", 401);
 
     const checkPassword = await bcrypt.compare(data.password, admin.password);
 
