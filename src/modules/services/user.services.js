@@ -50,3 +50,18 @@ module.exports.putUser = async (...data) => {
 
     return "Data updated successfully";
 };
+
+/*
+* TODO:
+* - Add removing the authentication when user deletes account himself
+*/
+
+module.exports.deleteUser = async id => {
+    const user = await User.findById(id);
+
+    if (!user) invalidContent("User not found", 404);
+
+    await User.findByIdAndDelete(id);
+
+    return "User deleted successfully";
+};
