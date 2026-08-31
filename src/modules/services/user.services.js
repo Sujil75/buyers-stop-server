@@ -4,7 +4,14 @@ const User = require("../models/user.model");
 
 module.exports.getUser = async data => {
     const {id} = data;
-    const user = await User.findById(id);
+    
+    const userExists = await User.findById(id);
+
+    if (!userExists) {
+        invalidContent("User does not exist", 404);
+    };
+
+    const user = await User.find();
     
     return {
         data: user,
@@ -61,7 +68,16 @@ module.exports.deleteUser = async id => {
 
     if (!user) invalidContent("User not found", 404);
 
+    await User.findByIdAndUpdate(
+        user.id,
+        {
+            $unset: {
+                refresh_token: 1,
+            },
+        }
+    );
+
     await User.findByIdAndDelete(id);
 
-    return "User deleted successfully";
+    return "User removed successfully";
 };

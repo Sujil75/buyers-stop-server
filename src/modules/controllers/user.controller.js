@@ -43,7 +43,7 @@ module.exports.updateUser = async (req, res, next) => {
 
 module.exports.removeUser = async (req, res, next) => {
     try {
-        const id = await req.params.id;
+        const id = await req.user.id;
 
         if (!id) invalidContent("Invalid ID found", 404);
 

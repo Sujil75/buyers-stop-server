@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Address",
     },
+    refresh_token: {
+        type: String,
+        select: false,
+    },
 }, {
     timestamps: true,
 });

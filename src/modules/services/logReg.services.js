@@ -7,7 +7,7 @@ const { invalidContent } = require("../../handler/errHandlers");
 const secret = process.env.JWT_SECRET;
 
 const provideInvalidData = data => {
-    const {email, username, password} = data;
+    const {email, username, password, user_type} = data;
 
     if (!email) {
         const err = new Error("Please enter an email");
@@ -25,6 +25,13 @@ const provideInvalidData = data => {
 
     if (!password) {
         const err = new Error("Please enter a password");
+        err.status = 400;
+
+        throw err;
+    };
+
+    if (!user_type) {
+        const err = new Error("Please enter a valid user type");
         err.status = 400;
 
         throw err;
@@ -81,7 +88,7 @@ module.exports.validateUser = async data => {
         email: data.email,
     }).select("+password");
     
-    if (!admin) invalidContent("Invalid email or password", 401);
+    if (!admin) invalidContent("Invalid email or password, or user doesn't exist", 401);
 
     const checkPassword = await bcrypt.compare(data.password, admin.password);
 
