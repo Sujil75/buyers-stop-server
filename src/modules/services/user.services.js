@@ -2,7 +2,24 @@ const bcrypt = require("bcrypt");
 const { invalidContent } = require("../../handler/errHandlers");
 const User = require("../models/user.model");
 
-module.exports.getUser = async data => {
+module.exports.getUserList = async data => {
+    const {id} = data;
+    
+    const userExists = await User.findById(id);
+
+    if (!userExists) invalidContent("User does not exist", 404);
+
+    const user = await User.find();
+
+    if (!user) invalidContent("No users added yet", 404);
+    
+    return {
+        data: user,
+        message: "Successfully fetched all user details",
+    };
+};
+
+module.exports.getUserProfile = async data => {
     const {id} = data;
     
     const userExists = await User.findById(id);
@@ -10,11 +27,9 @@ module.exports.getUser = async data => {
     if (!userExists) {
         invalidContent("User does not exist", 404);
     };
-
-    const user = await User.find();
     
     return {
-        data: user,
+        data: userExists,
         message: "Successfully fetched user details",
     };
 };

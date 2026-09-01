@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     },
     user_type: {
         type: String,
-        enum: ["consumer", "retailer"],
+        enum: ["consumer", "retailer", "creator"],
         default: "consumer",
     },
     user_address: {

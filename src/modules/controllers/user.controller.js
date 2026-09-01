@@ -1,21 +1,33 @@
 const { missingBodyErrHandler, invalidContent } = require("../../handler/errHandlers");
 const {
-    getUser,
+    getUserList,
     putUser,
     deleteUser,
+    getUserProfile,
 } = require("../services/user.services");
 
 module.exports.showUser = async (req, res, next) => {
     try {
         const body = req.user;
 
-        const content = await getUser(body);
+        if (body.role === "creator") {
+            const userList = await getUserList(body);
+
+            res.status(200).json({
+                success: true,
+                status: 200,
+                message: userList.message,
+                data: userList.data,
+            });
+        };
+
+        const userProfile = await getUserProfile(body);
 
         res.status(200).json({
             success: true,
             status: 200,
-            message: content.message,
-            data: content.data,
+            message: userProfile.message,
+            data: userProfile.data,
         });
     } catch (err) {
         next(err);
