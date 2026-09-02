@@ -9,7 +9,7 @@ module.exports.getUserList = async data => {
 
     if (!userExists) invalidContent("User does not exist", 404);
 
-    const user = await User.find();
+    const user = await User.find(); // password will not be shown
 
     if (!user) invalidContent("No users added yet", 404);
     
