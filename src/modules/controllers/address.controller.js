@@ -1,4 +1,5 @@
-const { getAddress } = require("../services/address.services");
+const { missingBodyErrHandler } = require("../../handler/errHandlers");
+const { getAddress, postAddress } = require("../services/address.services");
 
 module.exports.displayAddress = async (req, res, next) => {
     try {
@@ -14,5 +15,24 @@ module.exports.displayAddress = async (req, res, next) => {
         });
     } catch(err) {
         next(err)
+    };
+};
+
+module.exports.addAddress = async (req, res, next) => {
+    try {
+        const body = req.body;
+        const user = req.user;
+
+        missingBodyErrHandler(body, next);
+
+        const message = await postAddress(user, body);
+
+        res.status(201).json({
+            success: true,
+            status: 201,
+            message,
+        });
+    } catch(err) {
+        next(err);
     };
 };

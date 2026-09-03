@@ -5,14 +5,6 @@ const addressSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
-    fullname: {
-        type: String,
-        trim: true,
-    },
-    phone: {
-        type: Number,
-        trim: true,
-    },
     address_line1: {
         type: String,
         trim: true,

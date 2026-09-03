@@ -3,6 +3,7 @@ const cors = require('cors');
 const errMiddleware = require('./middlewares/errMiddleware');
 const userRoutes = require("./modules/routes/user.routes");
 const productRoutes = require("./modules/routes/product.routes");
+const addressRoutes = require("./modules/routes/address.routes");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use("/api", userRoutes);
 
 app.use("/api/product", productRoutes);
+app.use("/api/user/address", addressRoutes);
 
 app.use(errMiddleware);
 
