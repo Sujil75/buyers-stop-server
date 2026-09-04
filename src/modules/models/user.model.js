@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
         enum: ["consumer", "retailer", "creator"],
         default: "consumer",
     },
-    user_address: {
+    address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Address",
     },

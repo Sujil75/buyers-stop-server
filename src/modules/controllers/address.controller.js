@@ -20,8 +20,7 @@ module.exports.displayAddress = async (req, res, next) => {
 
 module.exports.addAddress = async (req, res, next) => {
     try {
-        const body = req.body;
-        const user = req.user;
+        const {user, body} = req;
 
         missingBodyErrHandler(body, next);
 
