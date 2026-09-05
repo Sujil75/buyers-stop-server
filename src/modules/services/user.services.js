@@ -22,9 +22,7 @@ module.exports.getUserList = async data => {
 module.exports.getUserProfile = async data => {
     const {id} = data;
     
-    const userExists = await User.findById(id)
-            .populate("address")
-            .lean();
+    const userExists = await User.findById(id);
 
     if (!userExists) {
         invalidContent("User does not exist", 404);

@@ -3,9 +3,9 @@ const { getAddress, postAddress } = require("../services/address.services");
 
 module.exports.displayAddress = async (req, res, next) => {
     try {
-        const body = req.user;
+        const user = req.user;
 
-        const content = await getAddress(body);
+        const content = await getAddress(user);
 
         res.status(200).json({
             success: true,
