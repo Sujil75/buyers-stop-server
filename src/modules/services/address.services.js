@@ -2,13 +2,16 @@ const { invalidContent } = require("../../handler/errHandlers");
 const Address = require("../models/address.model");
 
 module.exports.getAddress = async data => {
+    const user = data.id;
     const address = await Address.find();
+
+    const userAddress = address.filter(adr => adr.user == user);
     
-    if (!address) invalidContent("Missing address, please add one", 404);
+    if (userAddress.length < 1) invalidContent("User didn't added any address, please add one", 404);   
 
     return {
         message: "Successfully fetched address",
-        data: address,
+        data: userAddress,
     };
 };
 
