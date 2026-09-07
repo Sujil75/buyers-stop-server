@@ -1,3 +1,4 @@
+const { asyncHandler } = require("../../core/utils");
 const { missingBodyErrHandler, invalidContent } = require("../../handler/errHandlers");
 const {
     getUserList,
@@ -6,67 +7,55 @@ const {
     getUserProfile,
 } = require("../services/user.services");
 
-module.exports.showUser = async (req, res, next) => {
-    try {
-        const body = req.user;
+module.exports.showUser = asyncHandler(async (req, res, next) => {
+    const body = req.user;
 
-        if (body.role === "creator") {
-            const userList = await getUserList(body);
-
-            res.status(200).json({
-                success: true,
-                status: 200,
-                message: userList.message,
-                data: userList.data,
-            });
-        };
-
-        const userProfile = await getUserProfile(body);
+    if (body.role === "creator") {
+        const userList = await getUserList(body);
 
         res.status(200).json({
             success: true,
             status: 200,
-            message: userProfile.message,
-            data: userProfile.data,
+            message: userList.message,
+            data: userList.data,
         });
-    } catch (err) {
-        next(err);
     };
-};
 
-module.exports.updateUser = async (req, res, next) => {
-    try {
-        const body = req.body;
-        const user = req.user;
-        
-        missingBodyErrHandler(body);
+    const userProfile = await getUserProfile(body);
 
-        const message = await putUser(body, user);
+    res.status(200).json({
+        success: true,
+        status: 200,
+        message: userProfile.message,
+        data: userProfile.data,
+    });
+});
 
-        res.status(200).json({
-            success: true,
-            status: 200,
-            message,
-        });
-    } catch (err) {
-        next(err);
-    };
-};
+module.exports.updateUser = asyncHandler(async (req, res, next) => {
+    const body = req.body;
+    const user = req.user;
+    
+    missingBodyErrHandler(body);
 
-module.exports.removeUser = async (req, res, next) => {
-    try {
-        const id = await req.user.id;
+    const message = await putUser(body, user);
 
-        if (!id) invalidContent("Invalid ID found", 404);
+    res.status(200).json({
+        success: true,
+        status: 200,
+        message,
+    });
+});
 
-        const message = await deleteUser(id);
+module.exports.removeUser = asyncHandler(async (req, res, next) => {
+    const id = await req.user.id;
 
-        res.status(200).json({
-            success: true,
-            status: 200,
-            message,
-        });
-    } catch(err) {
-        next(err);
-    };
-};
+    if (!id) invalidContent("Invalid ID found", 404);
+
+    const message = await deleteUser(id);
+
+    res.status(200).json({
+        success: true,
+        status: 200,
+        message,
+    });
+});

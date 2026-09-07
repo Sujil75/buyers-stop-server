@@ -1,41 +1,34 @@
+const { asyncHandler } = require("../../core/utils");
 const { missingBodyErrHandler } = require("../../handler/errHandlers");
 const {
     createUser,
     validateUser,
 } = require("../services/logReg.services");
 
-module.exports.registerUser = async (req, res, next) => {
-    try {
-        const data = req.body;
+module.exports.registerUser = asyncHandler(async (req, res, next) => {
+    const data = req.body;
 
-        missingBodyErrHandler(data);
+    missingBodyErrHandler(data);
 
-        const message = await createUser(data);
+    const message = await createUser(data);
 
-        return res.status(201).json({
-            success: true,
-            status: 200,
-            message,
-        });
-    } catch(err) {
-        next(err);
-    };
-};
+    return res.status(201).json({
+        success: true,
+        status: 200,
+        message,
+    });
+});
 
-module.exports.loginUser = async (req, res, next) => {
-    try {
-        const body = req.body;
+module.exports.loginUser = asyncHandler(async (req, res, next) => {
+     const body = req.body;
 
-        missingBodyErrHandler(body);
+    missingBodyErrHandler(body);
 
-        const message = await validateUser(body);
+    const message = await validateUser(body);
 
-        res.status(200).json({
-            success: true,
-            status: 200,
-            message,
-        });
-    } catch(err) {
-        next(err);
-    };
-};
+    res.status(200).json({
+        success: true,
+        status: 200,
+        message,
+    });
+});
