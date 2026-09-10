@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const BaseModel = require("../../core/base/BaseModel");
 
-const reviewSchema = new mongoose.Schema({
+const reviewSchema = {
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
@@ -8,7 +8,8 @@ const reviewSchema = new mongoose.Schema({
     product: {
         type: ObjectId,
         ref: "Product",
-    },
+    }, 
+    review: String,
     rating: {
         type: Number,
         default: 0,
@@ -19,9 +20,10 @@ const reviewSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-}, {
-    timestamps: true,
-    collection: "Customer_Reviews"
-});
+};
 
-module.exports = mongoose.model("Customer_Reviews", reviewSchema);
+const reviewModel = new BaseModel("Customer_Reviews", reviewSchema);
+
+reviewModel.addIndex({product: 1});
+
+module.exports = reviewModel.getModel();

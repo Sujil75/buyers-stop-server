@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const BaseModel = require("../../core/base/BaseModel");
 
-const categorySchema = new mongoose.Schema({
+const categorySchema = {
     name: {
         type: String,
         trim: true
@@ -16,8 +16,9 @@ const categorySchema = new mongoose.Schema({
         type: String,
         trim: true,
     }
-}, {
-    timestamps: true,
-});
+};
 
-module.exports = mongoose.model("Category", categorySchema);
+const categoryModel = new BaseModel("Category", categorySchema);
+categoryModel.addIndex({name: 1});
+
+module.exports = categoryModel.getModel();

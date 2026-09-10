@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const BaseModel = require("../../core/base/BaseModel");
 
 /*
 * TODO:
 * - Add product rating based on customer rating on products 
 */
 
-const productSchema = new mongoose.Schema({
+const productSchema = {
     product_name: {
         type: String,
         required: true,
@@ -32,8 +32,9 @@ const productSchema = new mongoose.Schema({
         trim: true,
         required: true,
     },
-}, {
-    timestamps: true,
-}); 
+};
 
-module.exports = mongoose.model("Product", productSchema);
+const productModel = new BaseModel("Product", productSchema);
+productModel.addIndex({product: 1});
+
+module.exports = productModel.getModel();

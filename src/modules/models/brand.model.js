@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const BaseModel = require("../../core/base/BaseModel");
 
-const brandSchema = new mongoose.Schema({
+const brandSchema = {
     name: {
         type: String,
         trim: true,
@@ -9,7 +9,7 @@ const brandSchema = new mongoose.Schema({
         type: String,
         trim: true,
         match: [
-            /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+            ["']([a-zA-Z0-9-_]*logo[a-zA-Z0-9\-_]*\.(?:png|jpg|jpeg|gif)).*?['"]   ,
             "Please enter valid email format"
         ],
     },
@@ -17,8 +17,9 @@ const brandSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-}, {
-    timestamps: true,
-});
+};
 
-module.exports = mongoose.model("Brand", brandSchema);
+const brandModel = new BaseModel("Brand", brandSchema, {collection: "Brand"});
+brandModel.addIndex({name: 1});
+
+module.exports = brandModel.getModel();

@@ -1,29 +1,30 @@
-const mongoose = require("mongoose");
+const BaseModel = require("../../core/base/BaseModel");
 
-const cartSchema = new mongoose.Schema({
+const cartSchema = {
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
-    item: {
+    items: [{
         product: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Product"
         },
         quantity: {
             type: Number,
-            default: true,
-            min: 0
+            default: 0,
+            min: [0, "Quantity cannot be negative"],
         },
         price: Number,
-    },
+    }],
     totalAmount: {
         type: Number,
-        trim: true,
         default: 0,
+        min: [0, "Quantity cannot be negative"],
     }
-}, {
-    timestamps: true,
-});
+};
 
-module.exports = mongoose.model("Cart", cartSchema);
+const cartModel = new BaseModel("Cart", cartSchema, {collection: "Cart"});
+cartModel.addIndex({"items.quantity": 1});
+
+module.exports = cartModel.getModel();

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const BaseModel = require("../../core/base/BaseModel");
 
-const addressSchema = new mongoose.Schema({
+const addressSchema = {
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -20,8 +20,8 @@ const addressSchema = new mongoose.Schema({
         uppercase: true
     },
     pincode: Number
-}, {
-    timestamps: true,
-});
+};
 
-module.exports = mongoose.model("Address", addressSchema);
+const addressModel = new BaseModel("Address", addressSchema, {collection: "Address"});
+
+module.exports = addressModel.getModel();

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const BaseModel = require("../../core/base/BaseModel");
 
-const couponSchema = new mongoose.Schema({
+const couponSchema = {
     code: String,
 
     discountType: {
@@ -31,8 +31,9 @@ const couponSchema = new mongoose.Schema({
     },
 
     isActive: Boolean
-}, {
-    timestamps: true
-});
+};
 
-module.exports = mongoose.model("Coupons", couponSchema);
+const couponModel = new BaseModel("Coupon", couponSchema);
+couponModel.addIndex({expiryDate: 1});
+
+module.exports = couponModel.getModel();

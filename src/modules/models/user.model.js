@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const BaseModel = require("../../core/base/BaseModel");
 
-const userSchema = new mongoose.Schema({
+const userSchema = {
     name: {
         type: String,
         trim: true,
@@ -38,8 +38,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         select: false,
     },
-}, {
-    timestamps: true,
-});
+};
 
-module.exports = mongoose.model("User", userSchema)
+const userModel = new BaseModel("User", userSchema);
+
+// schema.index({email: 1}) or in here userModel.addIndex({email: -1}), is for showing the email in .find() method of mongoose to show all the email in ascending order for descending order -1 is to given in place of 1
+
+module.exports = userModel.getModel();
