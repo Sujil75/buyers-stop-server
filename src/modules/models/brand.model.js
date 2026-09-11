@@ -19,7 +19,7 @@ const brandSchema = {
     },
 };
 
-const brandModel = new BaseModel("Brand", brandSchema, {collection: "Brand"});
-brandModel.addIndex({name: 1});
+const BrandModel = new BaseModel("Brand", brandSchema, {collection: "Brand"});
+BrandModel.addIndex({name: 1});
 
-module.exports = brandModel.getModel();
+module.exports = BrandModel.getModel();

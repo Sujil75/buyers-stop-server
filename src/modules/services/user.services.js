@@ -1,98 +1,128 @@
 const bcrypt = require("bcrypt");
-const { invalidContent } = require("../../handler/errHandlers");
-const User = require("../models/user.model");
+const UserModel = require("../models/user.model");
+const BaseService = require("../../core/base/BaseService");
+const { InvalidContentError } = require("../../core/errors");
 
-module.exports.getUserList = async data => {
-    const {id} = data;
-    
-    const userExists = await User.findById(id);
-
-    if (!userExists) invalidContent("User does not exist", 404);
-
-    const user = await User.find(); // password will not be shown
-
-    if (!user) invalidContent("No users added yet", 404);
-    
-    return {
-        data: user,
-        message: "Successfully fetched all user details",
+class UserService extends BaseService {
+    constructor() {
+        super(UserModel);
     };
-};
 
-module.exports.getUserProfile = async data => {
-    const {id} = data;
+    async getUserList(data) {
+        const {id} = data;
     
-    const userExists = await User.findById(id);
+        const userExists = await this.model.findById(id);
 
-    if (!userExists) {
-        invalidContent("User does not exist", 404);
+        if (!userExists) {
+            throw new InvalidContentError("User does not exist", 404);
+        };
+
+        const user = await this.model.find(); // password will not be shown
+
+        if (!user || user.length === 0) {
+            throw new InvalidContentError("No users added yet", 404);
+        };
+
+        return {
+            data: user,
+            message: "Successfully fetched all user details",
+        };
     };
-    
-    return {
-        data: userExists,
-        message: "Successfully fetched user details",
+
+    async getUserProfile(data) {
+        const {id} = data;
+        
+        const userExists = await this.model.findById(id);
+
+        if (!userExists) {
+            throw new InvalidContentError("User does not exist", 404);
+        };
+        
+        return {
+            data: userExists,
+            message: "Successfully fetched user details",
+        };
     };
-};
 
-module.exports.putUser = async (...data) => {
-    const content = data[0];
-    const user = data[1];
+    async putUser(...data) {
+        const content = data[0];
+        const user = data[1];
 
-    if (content.new_password || content.old_password) {
-        if (!content.new_password) invalidContent("Provide a new_password", 404);
+        if (content.new_password || content.old_password) {
+            if (!content.new_password) {
+                throw new InvalidContentError("Provide a new_password", 400); 
+            };
 
-        if (!content.old_password) invalidContent("Provide the old_password", 404);
+            if (!content.old_password) {
+                throw new InvalidContentError("Provide the old_password", 400); 
+            };
 
-        const adminPassword = (await User.findById(user.id).select("+password"))?.password;
+            const adminPassword = (await this.model.findById(user.id).select("+password"))?.password;
 
-        const isValidPassword = await bcrypt.compare(
-            content.old_password, 
-            adminPassword
+            const isValidPassword = await bcrypt.compare(
+                content.old_password, 
+                adminPassword
+            );
+
+            if (!isValidPassword) {
+                throw new InvalidContentError("Invalid Old Password", 401); 
+            };
+            
+            const newHashedPassword = await bcrypt.hash(content.new_password, 10);
+            
+            delete content.old_password;
+            delete content.new_password;
+            content.password = newHashedPassword;
+        };
+
+        const body = await this.updateById(
+            user.id,
+            content,
+            {
+                new: true,
+                runValidators: true,
+            },
         );
 
-        if (!isValidPassword) invalidContent("Invalid Old Password", 401);
-        
-        const newHashedPassword = await bcrypt.hash(content.new_password, 10);
-        
-        delete content.old_password;
-        delete content.new_password;
-        content.password = newHashedPassword;
+        if (!body) {
+            throw new InvalidContentError("User not updated successfully", 404);
+        };
+
+        return {
+            message: "Data updated successfully",
+        };
     };
 
-    const body = await User.findByIdAndUpdate(
-        user.id,
-        content,
-        {
-            new: true,
-            runValidators: true,
-        },
-    );
+    /*
+    * TODO:
+    * - Add removing the authentication when user deletes account himself
+    */
 
-    if (!body) invalidContent("User not updated successfully", 404);
+    async deleteUser(id) {
+        const user = await this.model.findById(id);
 
-    return "Data updated successfully";
-};
+        if (!user) {
+            throw new InvalidContentError("User not found", 404);
+        };
 
-/*
-* TODO:
-* - Add removing the authentication when user deletes account himself
-*/
-
-module.exports.deleteUser = async id => {
-    const user = await User.findById(id);
-
-    if (!user) invalidContent("User not found", 404);
-
-    await User.findByIdAndUpdate(
-        user.id,
-        {
-            $unset: {
-                refresh_token: 1,
+        await this.model.findByIdAndUpdate(
+            id,
+            {
+                $unset: {
+                    refresh_token: 1,
+                },
             },
-        }
-    );
+            {
+                new: true,
+            },
+        );
 
-    await User.findByIdAndDelete(id);
+        await this.deleteById(id);
 
-    return "User removed successfully";
-};
+        return {
+            message: "User removed successfully",
+        };
+    };
+}
+
+module.exports = UserService;

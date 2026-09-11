@@ -1,4 +1,4 @@
-const {InvalidContentError} = require("../cors/errors");
+const {InvalidContentError} = require("../errors");
 
 class BaseService {
     constructor(model) {

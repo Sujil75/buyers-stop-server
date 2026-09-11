@@ -40,8 +40,8 @@ const userSchema = {
     },
 };
 
-const userModel = new BaseModel("User", userSchema);
+const UserModel = new BaseModel("User", userSchema);
 
 // schema.index({email: 1}) or in here userModel.addIndex({email: -1}), is for showing the email in .find() method of mongoose to show all the email in ascending order for descending order -1 is to given in place of 1
 
-module.exports = userModel.getModel();
+module.exports = UserModel.getModel();

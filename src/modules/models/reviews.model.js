@@ -24,6 +24,6 @@ const reviewSchema = {
 
 const reviewModel = new BaseModel("Customer_Reviews", reviewSchema);
 
-reviewModel.addIndex({product: 1});
+ReviewModel.addIndex({product: 1});
 
-module.exports = reviewModel.getModel();
+module.exports = ReviewModel.getModel();

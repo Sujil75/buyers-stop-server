@@ -18,7 +18,7 @@ const categorySchema = {
     }
 };
 
-const categoryModel = new BaseModel("Category", categorySchema);
-categoryModel.addIndex({name: 1});
+const CategoryModel = new BaseModel("Category", categorySchema);
+CategoryModel.addIndex({name: 1});
 
-module.exports = categoryModel.getModel();
+module.exports = CategoryModel.getModel()

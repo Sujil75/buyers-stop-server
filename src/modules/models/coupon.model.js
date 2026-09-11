@@ -33,7 +33,7 @@ const couponSchema = {
     isActive: Boolean
 };
 
-const couponModel = new BaseModel("Coupon", couponSchema);
-couponModel.addIndex({expiryDate: 1});
+const CouponModel = new BaseModel("Coupon", couponSchema);
+CouponModel.addIndex({expiryDate: 1});
 
-module.exports = couponModel.getModel();
+module.exports = cCuponModel.getModel();

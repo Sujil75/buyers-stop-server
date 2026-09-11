@@ -34,7 +34,7 @@ const productSchema = {
     },
 };
 
-const productModel = new BaseModel("Product", productSchema);
-productModel.addIndex({product: 1});
+const ProductModel = new BaseModel("Product", productSchema);
+ProductModel.addIndex({product: 1});
 
-module.exports = productModel.getModel();
+module.exports = ProductModel.getModel();

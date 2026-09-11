@@ -24,7 +24,7 @@ const cartSchema = {
     }
 };
 
-const cartModel = new BaseModel("Cart", cartSchema, {collection: "Cart"});
-cartModel.addIndex({"items.quantity": 1});
+const CartModel = new BaseModel("Cart", cartSchema, {collection: "Cart"});
+CartModel.addIndex({"items.quantity": 1});
 
-module.exports = cartModel.getModel();
+module.exports = CartModel.getModel();

@@ -22,6 +22,6 @@ const addressSchema = {
     pincode: Number
 };
 
-const addressModel = new BaseModel("Address", addressSchema, {collection: "Address"});
+const AddressModel = new BaseModel("Address", addressSchema, {collection: "Address"});
 
-module.exports = addressModel.getModel();
+module.exports = AddressModel.getModel();
