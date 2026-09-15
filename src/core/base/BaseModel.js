@@ -38,7 +38,7 @@ class BaseModel {
     };
 
     async updateById(id, updatedData, options = {}) {
-        return this.model.updateById(id, updatedData, options);
+        return this.model.findByIdAndUpdate(id, updatedData, options);
     };
 
     async deleteById(id) {
