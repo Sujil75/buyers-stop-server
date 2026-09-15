@@ -1,71 +1,82 @@
-const { default: mongoose } = require("mongoose");
-const { invalidContent } = require("../../handler/errHandlers");
-const Product = require("../models/product.model");
+const mongoose = require("mongoose");
+const { InvalidContentError, ConflictError } = require("../../core/errors");
+const ProductModel = require("../models/product.model");
+const BaseService = require("../../core/base/BaseService");
 
-const validateProductId = id => {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        invalidContent("Invalid Product ID found", 404);
-    };
-};
-
-module.exports.postProduct = async data => {
-    const existingProduct = await Product.findOne({
-        product_name: data.product_name,
-    });
-
-    if (existingProduct) {
-        const message = `Product with name '${existingProduct.product_name}' already exists`;
-
-        invalidContent(message, 409);
+class ProductService extends BaseService {
+    constructor() {
+        super(new ProductModel());
     };
 
-    await Product.create(data);
+    async postProduct(data) {
+        const existingProduct = await this.model.findOne({
+            product_name: data.product_name,
+        });
 
-    return "Product created successfully";
-};
+        if (existingProduct) {
+            const message = `Product with name '${existingProduct.product_name}' already exists`;
 
-module.exports.getProducts = async () => {
-    const productsList = await Product.find();
-    let message = "Data received successfully";
+            throw new ConflictError(message);
+        };
 
-    if (productsList.length === 0) {
-        message = "Product list is empty";
+        await this.model.create(data);
+
+        return {message: "Product created successfully"};
     };
 
-    return data = {
-        content: productsList,
-        message,
-    };
-};
+    async getProducts() {
+        const productsList = await this.model.find();
+        let message = "Data received successfully";
 
-module.exports.putProducts = async (data, id) => {
-    validateProductId(id);
+        if (productsList.length === 0) {
+            message = "Product list is empty";
+        };
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-        id,
-        data,
-        {
-            new: true,
-            runValidators: true,
-        }
-    );
-
-    if (!updatedProduct) {
-        invalidContent("Product not updated successfully", 404);
+        return {
+            content: productsList,
+            message: message,
+        };
     };
 
-    return "Product updated successfully";
-};
+    async putProducts(data, id) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new InvalidContentError("Invalid Product ID found");
+        };
 
+        const updated = await this.model.updateById(
+            id,
+            data,
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
 
-module.exports.deleteProduct = async id => {
-    validateProductId(id);
+        if (!updated) {
+            throw new InvalidContentError("Product not updated successfully");
+        };
 
-    const deleteProduct = await Product.findByIdAndDelete(id);
-
-    if (!deleteProduct) {
-        invalidContent("Product not deleted", 404);
+        return {
+            message: "Product updated successfully"
+        };
     };
 
-    return "Product deleted successfully";
-};
+
+    async deleteProduct(id) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new InvalidContentError("Invalid Product ID found");
+        };
+
+        const deleted = await this.model.deleteById(id);
+
+        if (!deleted) {
+            throw new InvalidContentError("Product not deleted");
+        };
+
+        return {
+            message: "Product deleted successfully",
+        };
+    };
+}
+
+module.exports = ProductService;
