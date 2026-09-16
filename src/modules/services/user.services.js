@@ -25,7 +25,7 @@ class UserService extends BaseService {
 
         return {
             data: user,
-            message: "Successfully fetched all user details",
+            message: "Successfully fetched user list",
         };
     };
 

@@ -1,61 +1,49 @@
-const { asyncHandler } = require("../../core/utils");
-const { missingBodyErrHandler, invalidContent } = require("../../handler/errHandlers");
-const {
-    getUserList,
-    putUser,
-    deleteUser,
-    getUserProfile,
-} = require("../services/user.services");
+const BaseController = require("../../core/base/BaseController");
+const { InvalidContentError } = require("../../core/errors");
+const { ApiResponse } = require("../../core/utils");
+const UserService = require("../services/user.services");
 
-module.exports.showUser = asyncHandler(async (req, res, next) => {
-    const body = req.user;
+class UserController extends BaseController {
+    constructor() {
+        super(new UserService());
+    };
 
-    if (body.role === "creator") {
-        const userList = await getUserList(body);
+    showUser = (req, res, next) => {
+        return this.handleAsync(async () => {
+            const body = req.user;
 
-        res.status(200).json({
-            success: true,
-            status: 200,
-            message: userList.message,
-            data: userList.data,
+            if (body.role === "creator") {
+                const userList = await this.service.getUserList(body);
+                return ApiResponse.ok(userList.message, userList.data).send(res);
+            };
+
+            const userProfile = await this.service.getUserProfile(body);
+            return ApiResponse.ok(userProfile.message, userProfile.data).send(res);
         });
     };
 
-    const userProfile = await getUserProfile(body);
+    updateUser = (req, res, next) => {
+        return this.handleAsync(async () => {
+            const body = req.body;
+            const user = req.user;
+            
+            if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body", 400);
 
-    res.status(200).json({
-        success: true,
-        status: 200,
-        message: userProfile.message,
-        data: userProfile.data,
-    });
-});
+            const message = await this.service.putUser(body, user);
+            return ApiResponse.ok(message).send(res);
+        });
+    };
 
-module.exports.updateUser = asyncHandler(async (req, res, next) => {
-    const body = req.body;
-    const user = req.user;
-    
-    missingBodyErrHandler(body);
+    removeUser = (req, res, next) => {
+        return this.handleAsync(async () => {
+            const id = await req.user.id;
 
-    const message = await putUser(body, user);
+            if (!id) throw new InvalidContentError("Invalid ID found", 404);
 
-    res.status(200).json({
-        success: true,
-        status: 200,
-        message,
-    });
-});
+            const message = await this.service.deleteUser(id);
+            return ApiResponse.ok(message).send(res);
+        });
+    };
+}
 
-module.exports.removeUser = asyncHandler(async (req, res, next) => {
-    const id = await req.user.id;
-
-    if (!id) invalidContent("Invalid ID found", 404);
-
-    const message = await deleteUser(id);
-
-    res.status(200).json({
-        success: true,
-        status: 200,
-        message,
-    });
-});
+module.exports = UserController;

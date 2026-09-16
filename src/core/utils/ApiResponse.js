@@ -27,7 +27,7 @@ class ApiResponse {
         };
 
         if (this.data !== null) response.data = this.data;
-        if (this.meta !== null) response.data = this.data;
+        if (this.meta !== null) response.meta = this.meta;
 
         return res.status(this.statusCode).json(response);
     };
