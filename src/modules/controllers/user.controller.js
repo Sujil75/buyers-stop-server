@@ -46,4 +46,4 @@ class UserController extends BaseController {
     };
 }
 
-module.exports = UserController;
+module.exports = new UserController();

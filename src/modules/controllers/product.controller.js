@@ -1,60 +1,43 @@
-const { asyncHandler } = require("../../core/utils");
-const { missingBodyErrHandler } = require("../../handler/errHandlers");
-const { 
-    postProduct,
-    getProducts,
-    putProducts,
-    deleteProduct
-} = require("../services/product.services");
+const BaseController = require("../../core/base/BaseController");
+const { InvalidContentError } = require("../../core/errors");
+const { ApiResponse } = require("../../core/utils");
+const ProductService = require("../services/product.services");
 
-module.exports.createProduct = asyncHandler(async (req, res, next) => {
-    const body = req.body;
+class ProductController extends BaseController {
+    constructor() {
+        super(new ProductService());
+    };
+
+    createProduct = this.handleAsync(async (req, res, next) => {
+        const body = req.body;
         
-    missingBodyErrHandler(body, next);
+        if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body");
 
-    const message = await postProduct(body);
-
-    res.status(201).json({
-        success: true,
-        status: 201,
-        message
+        const message = await this.service.postProduct(body);
+        return ApiResponse.ok(message).send(res);
     });
-});
 
-module.exports.showProducts = asyncHandler(async (req, res, next) => {
-    const data = await getProducts();
-
-    res.status(200).json({
-        success: true,
-        status: 200,
-        message: data.message,
-        data: data.content,
+    showProducts = this.handleAsync(async (req, res, next) => {
+        const data = await this.service.getProducts();
+        return ApiResponse.ok(data.message, data.content).send(res);
     });
-});
 
-module.exports.updateProducts = asyncHandler(async (req, res, next) => {
-    const body = req.body;
-    const id = req.params.id;
-    
-    missingBodyErrHandler(body, next);
+    updateProducts = this.handleAsync(async (req, res, next) => {
+        const body = req.body;
+        const id = req.params.id;
+        
+        if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body");
 
-    const message = await putProducts(body, id);
-    
-    res.status(200).json({
-        success: true,
-        status: 200,
-        message,
+        const message = await this.service.putProducts(body, id);
+        return ApiResponse.ok(message).send(res);
     });
-});
 
-module.exports.removeProducts = asyncHandler(async (req, res, next) => {
-    const id = req.params.id;
+    removeProducts = this.handleAsync(async (req, res, next) => {
+        const id = req.params.id;
 
-    const message = await deleteProduct(id);
-
-    res.status(200).json({
-        success: true,
-        status: 200,
-        message,
+        const message = await this.service.deleteProduct(id);
+        return ApiResponse.ok(message).send(res);
     });
-});
+}
+
+module.exports = new ProductController();
