@@ -8,25 +8,29 @@ class AuthController extends BaseController {
         super(new AuthService());
     };
 
-    registerUser = this.handleAsync(async (req, res, next) => {
-        const data = req.body;
+    registerUser = (req, res, next) => {
+        return this.handleAsync(async () => {
+            const data = req.body;
 
-        if (!data || Object.keys(data).length < 1) throw new InvalidContentError("Missing request body")
+            if (!data || Object.keys(data).length < 1) throw new InvalidContentError("Missing request body")
 
-        const message = await this.service.createUser(data);
+            const message = await this.service.createUser(data);
 
-        return ApiResponse.ok(message).send(res);
-    });
+            return ApiResponse.ok(message).send(res);
+        });
+    };
 
-    loginUser = this.handleAsync(async (req, res, next) => {
-        const body = req.body;
+    loginUser = (req, res, next) => {
+        return this.handleAsync(async () => {
+            const body = req.body;
 
-        if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body")
+            if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body")
 
-        const message = await this.service.validateUser(body);
+            const message = await this.service.validateUser(body);
 
-        return ApiResponse.ok(message).send(res);
-    });
+            return ApiResponse.ok(message).send(res);
+        });
+    };
 }
 
 module.exports = new AuthController();
