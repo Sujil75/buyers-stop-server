@@ -1,32 +1,36 @@
-const { 
-    asyncHandler
-} = require("../../core/utils");
-const { missingBodyErrHandler } = require("../../handler/errHandlers");
-const { getAddress, postAddress } = require("../services/address.services");
+const BaseController = require("../../core/base/BaseController");
+const { InvalidContentError } = require("../../core/errors");
+const { ApiResponse } = require("../../core/utils");
+const AddressService = require("../services/address.services");
 
-module.exports.displayAddress = asyncHandler(async (req, res, next) => {
-    const user = req.user;
+class AddressController extends BaseController {
+    constructor() {
+        super(new AddressService());
+    };
 
-    const content = await getAddress(user);
+    displayAddress = (req, res, next) => {
+        return this.handleAsync(async () => {
+            const user = req.user;
 
-    res.status(200).json({
-        success: true,
-        status: 200,
-        message: content.message,
-        data: content.data,
-    });
-});
+            const content = this.service.getAddress(user);
 
-module.exports.addAddress = async (req, res, next) => {
-    const {user, body} = req;
+            if (!content) throw new NotFoundError("No data to display");
 
-    missingBodyErrHandler(body, next);
+            return ApiResponse.ok(content.message, content.data).send(res);
+        });
+    };
 
-    const message = await postAddress(user, body);
+    addAddress = (req, res, next) => {
+        return this.handleAsync(async () => {
+            const {user, body} = req;
 
-    res.status(201).json({
-        success: true,
-        status: 201,
-        message,
-    });
-};
+            if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing user request body");
+
+            const message = this.service.postAddress(user, body);
+
+            return ApiResponse.ok(message).send(res);
+        });
+    };
+}
+
+module.exports = new AddressController();

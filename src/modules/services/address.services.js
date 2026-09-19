@@ -39,7 +39,7 @@ class AddressService extends BaseService {
         return {
             message: "Address added successfully",
         };
-    }; 
+    };
 }
 
 module.exports = AddressService;
