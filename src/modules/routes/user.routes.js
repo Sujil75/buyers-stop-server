@@ -1,26 +1,35 @@
-const express = require("express");
+const BaseRouter = require("../../core/base/BaseRouter");
 const userAuthenticator = require("../../middlewares/authMiddleware");
+const roleMiddleware = require("../../middlewares/roleMiddleware");
 const { 
     registerUser,
     loginUser,
 } = require("../controllers/logReg.controller");
-const { 
-    showUser,
-    updateUser,
-    removeUser,
-} = require("../controllers/user.controller");
-const roleMiddleware = require("../../middlewares/roleMiddleware");
+const UserController = require("../controllers/user.controller");
 
-const router = express.Router();
+class UserRouter extends BaseRouter {
+    constructor(controller, basePath, middlewares = []) {
+        super(controller, basePath, middlewares);
+        this.controller = controller;
+        this.setupAuthRoutes();
+        this.setupUserRoutes();
+    };
 
-// for user authenticator and authorization
-router.post("/auth/register", registerUser);
-router.post("/auth/login", loginUser);
+    setupAuthRoutes() {
+        // for user authenticator and authorization
+        this.router.post("/auth/register", registerUser);
+        this.router.post("/auth/login", loginUser);
+    };
 
-// for user details
-router.get("/user/profile", userAuthenticator, roleMiddleware("retailer", "consumer"), showUser);
-router.get("/user", userAuthenticator, roleMiddleware("creator"), showUser);
-router.put("/user", userAuthenticator, updateUser);
-router.delete("/user", userAuthenticator, removeUser);
+    setupUserRoutes() {
+        // for user details
+        this.router.get("/user/profile", userAuthenticator, roleMiddleware("retailer", "consumer"), this.controller.showUser);
+        this.router.get("/user", userAuthenticator, roleMiddleware("creator"), this.controller.showUser);
+        this.router.put("/user", userAuthenticator, this.controller.updateUser);
+        this.router.delete("/user", userAuthenticator, this.controller.removeUser);
+    };
+    
+    setupRoutes() {}; // prevents the base router from overriding the unwanted CRUD routes
+}
 
-module.exports = router;
+module.exports = new UserRouter(UserController);

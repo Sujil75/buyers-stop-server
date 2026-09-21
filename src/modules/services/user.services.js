@@ -8,14 +8,14 @@ class UserService extends BaseService {
         super(UserModel);
     };
 
-    async getUserList(data) {
-        const {id} = data;
+    async getUserList(/* data */) {
+        // const {id} = data;
     
-        const userExists = await this.model.findById(id);
+        // const userExists = await this.model.findById(id);
 
-        if (!userExists) {
-            throw new InvalidContentError("User does not exist", 404);
-        };
+        // if (!userExists) {
+        //     throw new InvalidContentError("User does not exist", 404);
+        // };
 
         const user = await this.model.find(); // password will not be shown
 
