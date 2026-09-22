@@ -1,18 +1,22 @@
-const express = require("express");
-const { 
-    createProduct,
-    showProducts,
-    updateProducts,
-    removeProducts
-} = require("../controllers/product.controller");
-const userAuthenticator = require("../../middlewares/authMiddleware");
-const roleMiddleware = require("../../middlewares/roleMiddleware");
+const {AuthMiddleware, RoleMiddleware} = require("../../middlewares");
+const BaseRouter = require("../../core/base/BaseRouter");
+const ProductController = require("../controllers/product.controller");
 
-const router = express.Router();
+class ProductRouter extends BaseRouter {
+    constructor(controller, basePath, middlewares = []) {
+        super(controller, basePath, [...middlewares, AuthMiddleware]);
+        this.controller = controller;
+        this.setupProductRoutes();
+    };
 
-router.post("/", userAuthenticator, roleMiddleware("retailer"), createProduct);
-router.get("/", userAuthenticator, roleMiddleware("retailer", "consumer"), showProducts);
-router.put("/:id", userAuthenticator, roleMiddleware("retailer"), updateProducts);
-router.delete("/:id", userAuthenticator, roleMiddleware("retailer"), removeProducts);
+    setupProductRoutes() {
+        this.router.post("/", RoleMiddleware("retailer"), this.controller.createProduct);
+        this.router.get("/", RoleMiddleware("retailer", "consumer"), this.controller.showProducts);
+        this.router.put("/:id", RoleMiddleware("retailer"), this.controller.updateProducts);
+        this.router.delete("/:id", RoleMiddleware("retailer"), this.controller.removeProducts);
+    };
 
-module.exports = router;
+    setupRoutes() {};
+}
+
+module.exports = new ProductRouter(ProductController, ""); // Empty quotes for passing basePaths

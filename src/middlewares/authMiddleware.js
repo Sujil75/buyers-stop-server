@@ -1,36 +1,20 @@
 const jwt = require("jsonwebtoken");
+const { UnauthorizedError } = require("../core/errors");
 require("dotenv").config();
 
 const secret = process.env.JWT_SECRET;
 
-function notAuthenticatedOrAuthorized(content) {
-    let err;
-
-    if (!content) {
-        err = new Error("User not authenticated");
-        err.status = 401;
-        
-        throw err;
-    };
-
-    
-    err = new Error(content);
-    err.status = 401;
-    
-    throw err;
-};
-
-const userAuthenticator = async (req, res, next) => {
+const AuthMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         
-        if (!authHeader) notAuthenticatedOrAuthorized()
+        if (!authHeader) throw new UnauthorizedError("User not authenticated");
 
         const token = authHeader.split(" ")[1];
         
         const verifyToken = await jwt.verify(token, secret);
 
-        if (!verifyToken) notAuthenticatedOrAuthorized("Invalid Token");
+        if (!verifyToken) throw new UnauthorizedError("Invalid Token")
 
         req.user = verifyToken;
 
@@ -40,4 +24,4 @@ const userAuthenticator = async (req, res, next) => {
     };
 };
 
-module.exports = userAuthenticator;
+module.exports = AuthMiddleware;

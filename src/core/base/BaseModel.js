@@ -29,7 +29,7 @@ class BaseModel {
         return this.model.findById(id, projection);
     };
 
-    async findOne(query = {}, projection = mull) {
+    async findOne(query = {}, projection = null) {
         return this.model.findOne(query, projection);
     };
 

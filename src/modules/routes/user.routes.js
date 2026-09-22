@@ -1,6 +1,5 @@
 const BaseRouter = require("../../core/base/BaseRouter");
-const userAuthenticator = require("../../middlewares/authMiddleware");
-const roleMiddleware = require("../../middlewares/roleMiddleware");
+const {AuthMiddleware, RoleMiddleware} = require("../../middlewares");
 const { 
     registerUser,
     loginUser,
@@ -23,13 +22,13 @@ class UserRouter extends BaseRouter {
 
     setupUserRoutes() {
         // for user details
-        this.router.get("/user/profile", userAuthenticator, roleMiddleware("retailer", "consumer"), this.controller.showUser);
-        this.router.get("/user", userAuthenticator, roleMiddleware("creator"), this.controller.showUser);
-        this.router.put("/user", userAuthenticator, this.controller.updateUser);
-        this.router.delete("/user", userAuthenticator, this.controller.removeUser);
+        this.router.get("/user/profile", AuthMiddleware, RoleMiddleware("retailer", "consumer"), this.controller.showUser);
+        this.router.get("/user", AuthMiddleware, RoleMiddleware("creator"), this.controller.showUser);
+        this.router.put("/user", AuthMiddleware, this.controller.updateUser);
+        this.router.delete("/user", AuthMiddleware, this.controller.removeUser);
     };
     
     setupRoutes() {}; // prevents the base router from overriding the unwanted CRUD routes
 }
 
-module.exports = new UserRouter(UserController);
+module.exports = new UserRouter(UserController, "");
