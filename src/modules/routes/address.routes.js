@@ -1,14 +1,20 @@
-const express = require("express");
-const userAuthenticator = require("../../middlewares/authMiddleware");
-const roleMiddleware = require("../../middlewares/roleMiddleware");
-const { 
-    displayAddress,
-    addAddress
-} = require("../controllers/address.controller");
+const BaseRouter = require("../../core/base/BaseRouter");
+const {AuthMiddleware, RoleMiddleware} = require("../../middlewares/roleMiddleware");
+const AddressController = require("../controllers/address.controller");
 
-const router = express.Router();
+class AddressRouter extends BaseRouter {
+    constructor(controller, basePath, middlewares = []) {
+        super(controller, basePath, [...middlewares, AuthMiddleware]);
+        this.controller = controller;
+        this.setupAddressRoutes();
+    };
 
-router.get("/", userAuthenticator, roleMiddleware("retailer", "consumer"), displayAddress);
-router.post("/", userAuthenticator, addAddress);
+    setupAddressRoutes() {
+        this.router.get("/", RoleMiddleware("retailer", "consumer"), this.controller.displayAddress);
+        this.router.post("/", this.controller.addAddress);
+    };
 
-module.exports = router;
+    setupRoutes() {};
+}
+
+module.exports = new AddressRouter(AddressController);
