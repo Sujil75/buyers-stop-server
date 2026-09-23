@@ -5,7 +5,6 @@ const AddressController = require("../controllers/address.controller");
 class AddressRouter extends BaseRouter {
     constructor(controller, basePath, middlewares = []) {
         super(controller, basePath, [...middlewares, AuthMiddleware]);
-        this.controller = controller;
         this.setupAddressRoutes();
     };
 

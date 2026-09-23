@@ -9,7 +9,6 @@ const UserController = require("../controllers/user.controller");
 class UserRouter extends BaseRouter {
     constructor(controller, basePath, middlewares = []) {
         super(controller, basePath, middlewares);
-        this.controller = controller;
         this.setupAuthRoutes();
         this.setupUserRoutes();
     };

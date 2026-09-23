@@ -5,7 +5,6 @@ const ProductController = require("../controllers/product.controller");
 class ProductRouter extends BaseRouter {
     constructor(controller, basePath, middlewares = []) {
         super(controller, basePath, [...middlewares, AuthMiddleware]);
-        this.controller = controller;
         this.setupProductRoutes();
     };
 

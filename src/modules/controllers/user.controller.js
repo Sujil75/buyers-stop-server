@@ -36,7 +36,7 @@ class UserController extends BaseController {
 
     removeUser = (req, res, next) => {
         return this.handleAsync(async () => {
-            const id = await req.user.id;
+            const id = req.user.id;
 
             if (!id) throw new InvalidContentError("Invalid ID found", 404);
 
