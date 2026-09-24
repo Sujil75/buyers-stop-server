@@ -13,7 +13,7 @@ class UserController extends BaseController {
             const body = req.user;
 
             if (body.role === "creator") {
-                const userList = await this.service.getUserList(/* body */);
+                const userList = await this.service.getUserList();
                 return ApiResponse.ok(userList.message, userList.data).send(res);
             };
 
