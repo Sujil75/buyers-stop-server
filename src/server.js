@@ -1,5 +1,5 @@
 const app = require("./app");
-const dbConnection = require("./config/dbConnection");
+const Database = require("../src/core/database/Database");
 require("dotenv").config();
 const dns = require('dns');
 
@@ -10,8 +10,8 @@ const PORT = process.env.PORT;
 
 const startServer = async () => {
     try {
-        await dbConnection()
-
+        await Database.connect();
+        
         app.listen(PORT, () => {
             console.log(`Server is running at http://localhost:${PORT} / published URI`);
         });
