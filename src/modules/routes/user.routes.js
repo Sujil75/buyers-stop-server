@@ -3,7 +3,7 @@ const {AuthMiddleware, RoleMiddleware} = require("../../middlewares");
 const { 
     registerUser,
     loginUser,
-} = require("../controllers/logReg.controller");
+} = require("../controllers/auth.controller");
 const UserController = require("../controllers/user.controller");
 
 class UserRouter extends BaseRouter {

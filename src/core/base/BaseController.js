@@ -1,8 +1,11 @@
-const { ApiResponse, ApiError } = require('../../core/utils');
+const { 
+  ApiResponse, 
+  ApiError 
+} = require('../../core/utils');
 
   class BaseController {
     constructor(service) {
-      if (!service || !(service instanceof BaseService)) {
+      if (!service) {
         throw new Error('BaseController requires a BaseService instance');
       }
       this.service = service;

@@ -1,4 +1,4 @@
-const BaseModel = require("../../core/base/BaseModel");
+const { BaseModel, mongoose} = require("../../core/base/BaseModel");
 
 const addressSchema = {
     user: {

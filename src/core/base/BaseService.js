@@ -1,8 +1,12 @@
-const {InvalidContentError, NotFoundError, ConflictError} = require("../errors");
+const {
+  InvalidContentError, 
+  NotFoundError, 
+  ConflictError
+} = require("../errors");
 
 class BaseService {
     constructor(model) {
-      if (!model || !(model instanceof BaseModel)) {
+      if (!model) {
         throw new Error('BaseService requires a BaseModel instance');
       }
       this.model = model;
@@ -50,7 +54,12 @@ class BaseService {
     }
 
     validateRequiredFields(data, requiredFields) {
-      const missing = requiredFields.filter(field => !data[field]);
+      const missing = requiredFields.filter(
+        field => 
+          data?.[field] === undefined ||
+          data?.[field] === null ||
+          data?.[field] === ""
+      );
       if (missing.length > 0) {
         throw new InvalidContentError(`Missing required fields: ${missing.join(', ')}`, 400);
       }

@@ -1,5 +1,5 @@
 const BaseRouter = require("../../core/base/BaseRouter");
-const {AuthMiddleware, RoleMiddleware} = require("../../middlewares/roleMiddleware");
+const {AuthMiddleware, RoleMiddleware} = require("../../middlewares");
 const AddressController = require("../controllers/address.controller");
 
 class AddressRouter extends BaseRouter {

@@ -58,4 +58,7 @@ class BaseModel {
     };
 }
 
-module.exports = BaseModel;
+module.exports = {
+    BaseModel,
+    mongoose,
+};

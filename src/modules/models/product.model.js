@@ -1,4 +1,4 @@
-const BaseModel = require("../../core/base/BaseModel");
+const { BaseModel } = require("../../core/base/BaseModel");
 
 /*
 * TODO:
@@ -15,7 +15,8 @@ const productSchema = {
         type: String,
         required: true,
         match: [
-            /^(https?:\/\/[^\s$.?#].[^\s]*)$/, "Please provide valid image address"
+            /^(https?:\/\/[^\s$.?#].[^\s]*)$/, 
+            "Please provide valid image address",
         ],
     }],
     remaining_product_count: {
@@ -35,6 +36,6 @@ const productSchema = {
 };
 
 const ProductModel = new BaseModel("Product", productSchema);
-ProductModel.addIndex({product: 1});
+ProductModel.addIndex({product_name: 1});
 
 module.exports = ProductModel.getModel();

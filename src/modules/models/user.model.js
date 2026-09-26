@@ -1,4 +1,7 @@
-const BaseModel = require("../../core/base/BaseModel");
+const {
+    BaseModel, 
+    mongoose
+} = require("../../core/base/BaseModel");
 
 const userSchema = {
     name: {
@@ -9,6 +12,7 @@ const userSchema = {
         type: String,
         required: true,
         trim: true,
+        unique: true,
     },
     email: {
         type: String,
