@@ -4,8 +4,6 @@ require("dotenv").config();
 const UserModel = require("../models/user.model");
 const BaseService = require("../../core/base/BaseService");
 const {
-    InvalidContentError, 
-    NotFoundError, 
     UnauthorizedError, 
     ConflictError,
     BadRequestError
@@ -32,7 +30,7 @@ class AuthService extends BaseService {
 
     async createUser(data) {
         if (!data) {
-            throw new NotFoundError("No User Data Found")
+            throw new BadRequestError("No User Data Found")
         };
 
         provideInvalidData(data);
@@ -70,28 +68,31 @@ class AuthService extends BaseService {
     }
 
     async validateUser(data) {
-        const admin = await this.model.findOne({
+        const user = await this.model.findOne({
             $or: [
                 {username: data.username},
                 {email: data.email},
             ]}
         ).select("+password");
         
-        if (!admin) throw new InvalidContentError("Invalid email or password, or user doesn't exist");
+        if (!user) throw new UnauthorizedError("Invalid credentials");
 
-        const checkPassword = await bcrypt.compare(data.password, admin.password);
+        const checkPassword = await bcrypt.compare(
+            data.password,
+            user.password,
+        );
 
-        if (!checkPassword) throw new UnauthorizedError("Invalid Password");
+        if (!checkPassword) throw new UnauthorizedError("Invalid credentials");
 
         const body = {
-            id: admin.id,
-            email: admin.email,
-            username: admin.username,
-            role: admin.user_type,
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.user_type,
         }
         
         const token = jwt.sign(
-            body, secret, {
+            body, this.secret, {
                 expiresIn: "1d"
             }
         );

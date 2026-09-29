@@ -11,43 +11,33 @@ const {
       this.service = service;
     }
 
-    getAll = (req, res, next) => {
-      return this.handleAsync(async () => {
-        const result = await this.service.getAll(req.query);
-        return ApiResponse.ok('Records fetched successfully', result.data).send(res);
-      });
-    };
+    getAll = this.handleAsync(async (req, res, next) => {
+      const result = await this.service.getAll(req.query);
+      return ApiResponse.ok('Records fetched successfully', result.data).send(res);
+    });
 
-    getById = (req, res, next) => {
-      return this.handleAsync(async () => {
-        const { id } = req.params;
-        const result = await this.service.getById(id);
-        return ApiResponse.ok('Record fetched successfully', result.data).send(res);
-      });
-    };
+    getById = this.handleAsync(async (req, res, next) => {
+      const { id } = req.params;
+      const result = await this.service.getById(id);
+      return ApiResponse.ok('Record fetched successfully', result.data).send(res);
+    });
 
-    create = (req, res, next) => {
-      return this.handleAsync(async () => {
-        const result = await this.service.create(req.body);
-        return ApiResponse.created('Record created successfully', result.data).send(res);
-      });
-    };
+    create = this.handleAsync(async (req, res, next) => {
+      const result = await this.service.create(req.body);
+      return ApiResponse.created('Record created successfully', result.data).send(res);
+    });
 
-    updateById = (req, res, next) => {
-      return this.handleAsync(async () => {
-        const { id } = req.params;
-        await this.service.updateById(id, req.body);
-        return ApiResponse.ok('Record updated successfully').send(res);
-      });
-    };
+    updateById =  this.handleAsync(async (req, res, next) => {
+      const { id } = req.params;
+      await this.service.updateById(id, req.body);
+      return ApiResponse.ok('Record updated successfully').send(res);
+    });
 
-    deleteById = (req, res, next) => {
-      return this.handleAsync(async () => {
-        const { id } = req.params;
-        await this.service.deleteById(id);
-        return ApiResponse.ok('Record deleted successfully').send(res);
-      });
-    };
+    deleteById =  this.handleAsync(async (req, res, next) => {
+      const { id } = req.params;
+      await this.service.deleteById(id);
+      return ApiResponse.ok('Record deleted successfully').send(res);
+    });
 
     // Async handler wrapper
     handleAsync(fn) {

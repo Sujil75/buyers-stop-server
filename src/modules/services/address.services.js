@@ -13,7 +13,7 @@ class AddressService extends BaseService {
         const {id} = data;
         const address = await this.model.find({user: id});
         
-        if (!address || address.length < 1) throw new InvalidContentError("User didn't added any address, please add one", 404);   
+        if (!address || address.length < 1) throw new InvalidContentError("User didn't added any address, please add one");   
 
         return {
             message: "Successfully fetched address",

@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
-const { InvalidContentError, ConflictError } = require("../../core/errors");
+const { 
+    BadRequestError, 
+    NotFoundError, 
+    ConflictError 
+} = require("../../core/errors");
 const ProductModel = require("../models/product.model");
 const BaseService = require("../../core/base/BaseService");
 
@@ -40,7 +44,7 @@ class ProductService extends BaseService {
 
     async putProducts(data, id) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw new InvalidContentError("Invalid Product ID found");
+            throw new BadRequestError("Invalid Product ID found");
         };
 
         const updated = await this.model.updateById(
@@ -53,7 +57,7 @@ class ProductService extends BaseService {
         );
 
         if (!updated) {
-            throw new InvalidContentError("Product not updated successfully");
+            throw new NotFoundError("Product not updated successfully");
         };
 
         return {
@@ -64,13 +68,13 @@ class ProductService extends BaseService {
 
     async deleteProduct(id) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw new InvalidContentError("Invalid Product ID found");
+            throw new BadRequestError("Invalid Product ID found");
         };
 
         const deleted = await this.model.deleteById(id);
 
         if (!deleted) {
-            throw new InvalidContentError("Product not deleted");
+            throw new NotFoundError("Product not deleted");
         };
 
         return {

@@ -1,5 +1,5 @@
 const {
-  InvalidContentError, 
+  BadRequestError, 
   NotFoundError, 
   ConflictError
 } = require("../errors");
@@ -15,7 +15,7 @@ class BaseService {
     async getAll(query = {}, projection = null) {
       const data = await this.model.find(query, projection);
       if (!data || data.length === 0) {
-        throw new NotFoundError('No records found', 404);
+        throw new NotFoundError('No records found');
       }
       return { data, message: 'Successfully fetched all records' };
     }
@@ -23,7 +23,7 @@ class BaseService {
     async getById(id, projection = null) {
       const data = await this.model.findById(id, projection);
       if (!data) {
-        throw new NotFoundError('Record not found', 404);
+        throw new NotFoundError('Record not found');
       }
       return { data, message: 'Successfully fetched record' };
     }
@@ -31,7 +31,7 @@ class BaseService {
     async create(data) {
       const existing = await this.model.findOne(data); 
       if (existing) {
-        throw new ConflictError('Record already exists', 409);
+        throw new ConflictError('Record already exists');
       }
       const created = await this.model.create(data);
       return { data: created, message: 'Successfully created record' };
@@ -40,7 +40,7 @@ class BaseService {
     async updateById(id, updateData, options = {}) {
       const updated = await this.model.updateById(id, updateData, options);
       if (!updated) {
-        throw new NotFoundError('Record not updated successfully', 404);
+        throw new NotFoundError('Record not updated successfully');
       }
       return { message: 'Successfully updated record' };
     }
@@ -48,7 +48,7 @@ class BaseService {
     async deleteById(id) {
       const deleted = await this.model.deleteById(id);
       if (!deleted) {
-        throw new NotFoundError('Record not deleted successfully', 404);
+        throw new NotFoundError('Record not deleted successfully');
       }
       return { message: 'Successfully deleted record' };
     }
@@ -61,7 +61,7 @@ class BaseService {
           data?.[field] === ""
       );
       if (missing.length > 0) {
-        throw new InvalidContentError(`Missing required fields: ${missing.join(', ')}`, 400);
+        throw new BadRequestError(`Missing required fields: ${missing.join(', ')}`);
       }
     }
   }

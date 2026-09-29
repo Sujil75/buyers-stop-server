@@ -1,5 +1,5 @@
 const BaseController = require("../../core/base/BaseController");
-const { InvalidContentError } = require("../../core/errors");
+const { BadRequestError } = require("../../core/errors");
 const { ApiResponse } = require("../../core/utils");
 const AddressService = require("../services/address.services");
 
@@ -12,7 +12,7 @@ class AddressController extends BaseController {
         return this.handleAsync(async () => {
             const user = req.user;
 
-            const content = this.service.getAddress(user);
+            const content = await this.service.getAddress(user);
 
             if (!content) throw new NotFoundError("No data to display");
 
@@ -24,9 +24,9 @@ class AddressController extends BaseController {
         return this.handleAsync(async () => {
             const {user, body} = req;
 
-            if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing user request body");
+            if (!body || Object.keys(body).length < 1) throw new BadRequestError("Missing user request body");
 
-            const message = this.service.postAddress(user, body);
+            const message = await this.service.postAddress(user, body);
 
             return ApiResponse.ok(message).send(res);
         });

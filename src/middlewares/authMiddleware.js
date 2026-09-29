@@ -4,17 +4,17 @@ require("dotenv").config();
 
 const secret = process.env.JWT_SECRET;
 
-const AuthMiddleware = async (req, res, next) => {
+const AuthMiddleware = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         
         if (!authHeader) throw new UnauthorizedError("User not authenticated");
 
-        const token = authHeader.split(" ")[1];
-        
-        const verifyToken = await jwt.verify(token, secret);
+        const [schema, token] = authHeader.split(" ");
 
-        if (!verifyToken) throw new UnauthorizedError("Invalid Token")
+        if (schema !== "Bearer" || !token) throw new UnauthorizedError("Invalid authorization header");
+        
+        const verifyToken = jwt.verify(token, secret);
 
         req.user = verifyToken;
 

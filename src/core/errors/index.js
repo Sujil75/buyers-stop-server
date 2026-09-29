@@ -5,7 +5,6 @@ const UnauthorizedError = require('./UnauthorizedError');
 const ForbiddenError = require('./ForbiddenError');
 const ConflictError = require('./ConflictError');
 const ValidationError = require('./ValidationError');
-const InvalidContentError = require('./invalidContentError');
 const DatabaseConnectionError = require('./DatabaseConnectionError');
 
 module.exports = {
@@ -16,6 +15,5 @@ module.exports = {
     ForbiddenError,
     ConflictError,
     ValidationError,
-    InvalidContentError,
     DatabaseConnectionError,
 };

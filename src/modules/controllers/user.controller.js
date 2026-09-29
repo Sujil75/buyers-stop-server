@@ -27,7 +27,7 @@ class UserController extends BaseController {
             const body = req.body;
             const user = req.user;
             
-            if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body", 400);
+            if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body");
 
             const message = await this.service.putUser(body, user);
             return ApiResponse.ok(message).send(res);
@@ -38,7 +38,7 @@ class UserController extends BaseController {
         return this.handleAsync(async () => {
             const id = req.user.id;
 
-            if (!id) throw new InvalidContentError("Invalid ID found", 404);
+            if (!id) throw new InvalidContentError("Invalid ID found");
 
             const message = await this.service.deleteUser(id);
             return ApiResponse.ok(message).send(res);

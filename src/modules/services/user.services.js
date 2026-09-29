@@ -1,7 +1,11 @@
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/user.model");
 const BaseService = require("../../core/base/BaseService");
-const { InvalidContentError } = require("../../core/errors");
+const { 
+    BadRequestError,
+    NotFoundError,
+    UnauthorizedError
+ } = require("../../core/errors");
 
 class UserService extends BaseService {
     constructor() {
@@ -20,7 +24,7 @@ class UserService extends BaseService {
         const user = await this.model.find(); // password will not be shown
 
         if (!user || user.length === 0) {
-            throw new InvalidContentError("No users added yet", 404);
+            throw new NotFoundError("No users added yet");
         };
 
         return {
@@ -35,7 +39,7 @@ class UserService extends BaseService {
         const userExists = await this.model.findById(id);
 
         if (!userExists) {
-            throw new InvalidContentError("User does not exist", 404);
+            throw new NotFoundError("User does not exist");
         };
         
         return {
@@ -50,11 +54,11 @@ class UserService extends BaseService {
 
         if (content.new_password || content.old_password) {
             if (!content.new_password) {
-                throw new InvalidContentError("Provide a new_password", 400); 
+                throw new BadRequestError("Provide a new_password");
             };
 
             if (!content.old_password) {
-                throw new InvalidContentError("Provide the old_password", 400); 
+                throw new BadRequestError("Provide the old_password"); 
             };
 
             const adminPassword = (await this.model.findById(user.id).select("+password"))?.password;
@@ -65,7 +69,7 @@ class UserService extends BaseService {
             );
 
             if (!isValidPassword) {
-                throw new InvalidContentError("Invalid Old Password", 401); 
+                throw new UnauthorizedError("Invalid Old Password"); 
             };
             
             const newHashedPassword = await bcrypt.hash(content.new_password, 10);
@@ -85,7 +89,7 @@ class UserService extends BaseService {
         );
 
         if (!body) {
-            throw new InvalidContentError("User not updated successfully", 404);
+            throw new NotFoundError("User not updated successfully");
         };
 
         return {
@@ -102,7 +106,7 @@ class UserService extends BaseService {
         const user = await this.model.findById(id);
 
         if (!user) {
-            throw new InvalidContentError("User not found", 404);
+            throw new NotFoundError("User not found");
         };
 
         await this.model.findByIdAndUpdate(
