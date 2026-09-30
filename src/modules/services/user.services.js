@@ -18,7 +18,7 @@ class UserService extends BaseService {
         // const userExists = await this.model.findById(id);
 
         // if (!userExists) {
-        //     throw new InvalidContentError("User does not exist", 404);
+        //     throw new NotFoundError("User does not exist", 404);
         // };
 
         const user = await this.model.find(); // password will not be shown

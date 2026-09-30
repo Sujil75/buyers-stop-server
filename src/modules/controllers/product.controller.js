@@ -1,5 +1,5 @@
 const BaseController = require("../../core/base/BaseController");
-const { InvalidContentError } = require("../../core/errors");
+const { BadRequestError } = require("../../core/errors");
 const { ApiResponse } = require("../../core/utils");
 const ProductService = require("../services/product.services");
 
@@ -11,7 +11,7 @@ class ProductController extends BaseController {
     createProduct = this.handleAsync(async (req, res, next) => {
         const body = req.body;
         
-        if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body");
+        if (!body || Object.keys(body).length < 1) throw new BadRequestError("Missing request body");
 
         const message = await this.service.postProduct(body);
         return ApiResponse.ok(message).send(res);
@@ -26,7 +26,7 @@ class ProductController extends BaseController {
         const body = req.body;
         const id = req.params.id;
         
-        if (!body || Object.keys(body).length < 1) throw new InvalidContentError("Missing request body");
+        if (!body || Object.keys(body).length < 1) throw new BadRequestError("Missing request body");
 
         const message = await this.service.putProducts(body, id);
         return ApiResponse.ok(message).send(res);

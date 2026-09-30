@@ -1,7 +1,7 @@
 const BaseService = require("../../core/base/BaseService");
 const AddressModel = require("../models/address.model");
 const {
-    InvalidContentError
+    NotFoundError,
 } = require("../../core/errors");
 
 class AddressService extends BaseService {
@@ -13,7 +13,7 @@ class AddressService extends BaseService {
         const {id} = data;
         const address = await this.model.find({user: id});
         
-        if (!address || address.length < 1) throw new InvalidContentError("User didn't added any address, please add one");   
+        if (!address || address.length < 1) throw new NotFoundError("User didn't added any address, please add one");   
 
         return {
             message: "Successfully fetched address",
@@ -30,6 +30,7 @@ class AddressService extends BaseService {
             address_line1: body.address_line1,
             address_line2: body.address_line2,
             city: body.city,
+            state: body.state,
             country: body.country,
             pincode: body.pincode,
         }
