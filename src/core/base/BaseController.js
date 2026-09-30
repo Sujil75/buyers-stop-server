@@ -1,6 +1,5 @@
 const { 
-  ApiResponse, 
-  ApiError 
+  ApiResponse,
 } = require('../../core/utils');
 
   class BaseController {
@@ -53,12 +52,6 @@ const {
     // Custom response methods
     successResponse(res, message, data = null, statusCode = 200) {
       return ApiResponse.ok(message, data, null).status(statusCode).send(res);
-    }
-
-    errorResponse(res, message, statusCode = 500, details = null) {
-      const apiError = ApiError.internal(message, details);
-      apiError.statusCode = statusCode;
-      return apiError.send(res);
     }
   }
 
