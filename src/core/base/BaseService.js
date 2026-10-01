@@ -1,7 +1,6 @@
 const {
   BadRequestError, 
-  NotFoundError, 
-  ConflictError
+  NotFoundError,
 } = require("../errors");
 
 class BaseService {
@@ -29,18 +28,18 @@ class BaseService {
     }
 
     async create(data) {
-      const existing = await this.model.findOne(data); 
-      if (existing) {
-        throw new ConflictError('Record already exists');
-      }
       const created = await this.model.create(data);
-      return { data: created, message: 'Successfully created record' };
+
+      return { 
+        data: created, 
+        message: 'Successfully created record' 
+      };
     }
 
     async updateById(id, updateData, options = {}) {
       const updated = await this.model.updateById(id, updateData, options);
       if (!updated) {
-        throw new NotFoundError('Record not updated successfully');
+        throw new NotFoundError('Record not found');
       }
       return { message: 'Successfully updated record' };
     }
@@ -48,9 +47,11 @@ class BaseService {
     async deleteById(id) {
       const deleted = await this.model.deleteById(id);
       if (!deleted) {
-        throw new NotFoundError('Record not deleted successfully');
+        throw new NotFoundError('Record not found');
       }
-      return { message: 'Successfully deleted record' };
+      return { 
+        message: 'Successfully deleted record' 
+      };
     }
 
     validateRequiredFields(data, requiredFields) {
