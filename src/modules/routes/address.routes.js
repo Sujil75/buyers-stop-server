@@ -16,4 +16,4 @@ class AddressRouter extends BaseRouter {
     setupRoutes() {};
 }
 
-module.exports = new AddressRouter(AddressController);
+module.exports = new AddressRouter(AddressController).getRouter();

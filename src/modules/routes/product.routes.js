@@ -18,4 +18,4 @@ class ProductRouter extends BaseRouter {
     setupRoutes() {};
 }
 
-module.exports = new ProductRouter(ProductController, ""); // Empty quotes for passing basePaths
+module.exports = new ProductRouter(ProductController, "").getRouter(); // Empty quotes for passing basePaths

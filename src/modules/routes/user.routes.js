@@ -30,4 +30,4 @@ class UserRouter extends BaseRouter {
     setupRoutes() {}; // prevents the base router from overriding the unwanted CRUD routes
 }
 
-module.exports = new UserRouter(UserController, "");
+module.exports = new UserRouter(UserController, "").getRouter();
