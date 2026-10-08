@@ -9,7 +9,7 @@ const BaseService = require("../../core/base/BaseService");
 
 class ProductService extends BaseService {
     constructor() {
-        super(new ProductModel());
+        super(ProductModel);
     };
 
     async postProduct(data) {

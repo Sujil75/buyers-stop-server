@@ -6,7 +6,7 @@ const {
 
 class AddressService extends BaseService {
     constructor() {
-        super(new AddressModel());
+        super(AddressModel);
     };
 
     async getAddress(data) {

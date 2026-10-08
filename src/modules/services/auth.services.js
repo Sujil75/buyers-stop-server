@@ -23,7 +23,7 @@ const provideInvalidData = data => {
 
 class AuthService extends BaseService {
     constructor() {
-        super(new UserModel())
+        super(UserModel)
     };
 
     secret = process.env.JWT_SECRET;
